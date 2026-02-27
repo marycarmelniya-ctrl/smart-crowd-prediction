@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Crowd Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Smart Crowd Prediction System</h1>
+
+    <form method="POST" class="form-box">
+        <label>Entries</label>
+        <input type="number" name="entries" required>
+
+        <label>Exits</label>
+        <input type="number" name="exits" required>
+
+        <label>Capacity</label>
+        <input type="number" name="capacity" required>
+
+        <button type="submit">Predict Crowd</button>
+    </form>
+
+    {% if result %}
+    <div class="dashboard">
+
+        <div class="card {{ result_class }}">
+            <h2>{{ result }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>Waiting Time</h3>
+            <p>{{ waiting_time }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Alert</h3>
+            <p>{{ alert }}</p>
+        </div>
+
+        <button onclick="speakResult()">🔊 Speak Result</button>
+
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+function speakResult() {
+    let text = "{{ result }}. Waiting time {{ waiting_time }}. {{ alert }}";
+    let speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    window.speechSynthesis.speak(speech);
+}
+</script>
+
+</body>
+</html>
