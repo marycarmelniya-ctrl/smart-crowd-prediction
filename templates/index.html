@@ -5,12 +5,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body class="bg-gray-200 min-h-screen flex items-center justify-center">
 
 <div class="w-full max-w-7xl bg-white shadow-xl rounded-lg overflow-hidden">
 
-    <!-- TOP NAV HEADER -->
+    <!-- HEADER -->
     <div class="bg-gray-900 text-white px-8 py-5 flex justify-between items-center">
         <div>
             <h1 class="text-xl font-semibold tracking-wide">
@@ -21,7 +20,8 @@
             </p>
         </div>
         <div class="text-xs text-gray-400">
-            Operational Status: <span class="text-green-400">Active</span>
+            Operational Status:
+            <span class="text-green-400">Active</span>
         </div>
     </div>
 
@@ -29,7 +29,6 @@
 
         <!-- INPUT PANEL -->
         <div class="p-8 border-r bg-gray-50">
-
             <h2 class="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wider">
                 Input Parameters
             </h2>
@@ -37,9 +36,7 @@
             <form method="POST" class="space-y-5">
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">
-                        Location
-                    </label>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Location</label>
                     <select name="location" required
                         class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
                         <option value="Mall - Ground Floor">Mall - Ground Floor</option>
@@ -50,34 +47,26 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">
-                        Entries
-                    </label>
-                    <input type="number" name="entries" required
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Entries</label>
+                    <input type="number" name="entries" min="0" required
                         class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">
-                        Exits
-                    </label>
-                    <input type="number" name="exits" required
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Exits</label>
+                    <input type="number" name="exits" min="0" required
                         class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">
-                        Capacity
-                    </label>
-                    <input type="number" name="capacity" required
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Capacity</label>
+                    <input type="number" name="capacity" min="1" required
                         class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">
-                        Exit Doors
-                    </label>
-                    <input type="number" name="exit_doors" required
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Exit Doors</label>
+                    <input type="number" name="exit_doors" min="1" required
                         class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
                 </div>
 
@@ -92,6 +81,13 @@
         <!-- ANALYTICS PANEL -->
         <div class="md:col-span-2 p-8">
 
+            <!-- SHOW ALERT ALWAYS IF EXISTS -->
+            {% if alert %}
+            <div class="mb-6 p-4 rounded-md bg-red-100 text-red-700">
+                {{ alert }}
+            </div>
+            {% endif %}
+
             {% if result %}
 
             <h2 class="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wider">
@@ -105,7 +101,6 @@
                     <p class="text-lg font-semibold text-gray-800 mt-1">
                         {{ result }}
                     </p>
-                    <p class="text-xs text-gray-400 mt-1">{{ location }}</p>
                 </div>
 
                 <div class="bg-gray-100 p-5 rounded-md">
@@ -129,88 +124,53 @@
                     </p>
                 </div>
 
-                <div class="bg-gray-100 p-5 rounded-md col-span-2">
+                <div class="bg-gray-100 p-5 rounded-md col-span-3">
                     <p class="text-xs text-gray-500">Evacuation Time</p>
                     <p class="text-lg font-semibold text-gray-800 mt-1">
                         {{ evac_time }} minutes
                     </p>
                 </div>
 
-                <div class="bg-gray-100 p-5 rounded-md col-span-3">
-                    <p class="text-xs text-gray-500">System Alert</p>
-                    <p class="text-sm text-gray-700 mt-1">
-                        {{ alert }}
-                    </p>
-                </div>
-
-            </div>
-
-            <!-- CHART -->
-            <div class="mt-10">
-                <canvas id="densityChart"></canvas>
-            </div>
-
-            <!-- AUDIO BRIEFING BUTTON -->
-            <div class="mt-6 text-right">
-                <button onclick="playBriefing()"
-                    class="bg-gray-800 hover:bg-black text-white px-6 py-2 rounded-md text-xs tracking-wide transition">
-                    ▶ PLAY AUDIO BRIEFING
-                </button>
             </div>
 
             {% endif %}
 
-        </div>
+            <!-- CHART (SAFE LOAD) -->
+            {% if density_percent is not none %}
+            <div class="mt-10">
+                <canvas id="densityChart"></canvas>
+            </div>
 
-    </div>
-
-</div>
-
-<script>
-function playBriefing() {
-    let briefing = `
-    Crowd status is {{ result }} at {{ location }}.
-    Current density is {{ density_percent }} percent.
-    Estimated entry delay is {{ waiting_time }}.
-    Risk score is {{ risk_score }}.
-    Evacuation time is {{ evac_time }} minutes.
-    System alert: {{ alert }}.
-    `;
-
-    let speech = new SpeechSynthesisUtterance(briefing);
-    speech.rate = 0.95;
-    speech.pitch = 1;
-    speech.lang = "en-US";
-
-    window.speechSynthesis.speak(speech);
-}
-</script>
-
-<script>
-{% if density_percent %}
-const ctx = document.getElementById('densityChart').getContext('2d');
-
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Crowd Density %'],
-        datasets: [{
-            data: [{{ density_percent }}],
-            backgroundColor: '#111827'
-        }]
-    },
-    options: {
-        plugins: { legend: { display: false } },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100
+            <script>
+            const canvas = document.getElementById('densityChart');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Crowd Density %'],
+                        datasets: [{
+                            data: [{{ density_percent|float }}],
+                            backgroundColor: '#111827'
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
             }
-        }
-    }
-});
-{% endif %}
-</script>
+            </script>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
