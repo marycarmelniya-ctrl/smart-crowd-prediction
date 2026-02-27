@@ -71,3 +71,13 @@ elif density > 0.75:
     alert = "⚠ High Crowd – Monitor Situation"
 else:
     alert = "Safe Environment"
+return render_template(
+    "index.html",
+    result=result,
+    waiting_time=waiting_time,
+    alert=alert,
+    result_class=result_class,
+    density_percent=density_percent,
+    risk_score=risk_score,
+    evac_time=evac_time
+)
