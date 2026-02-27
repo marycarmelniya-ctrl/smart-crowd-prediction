@@ -11,15 +11,16 @@ def home():
     density_percent = None
     risk_score = None
     evac_time = None
+    location = None
 
     if request.method == "POST":
-        # Get form values
+        location = request.form["location"]
         entries = int(request.form["entries"])
         exits = int(request.form["exits"])
         capacity = int(request.form["capacity"])
         exit_doors = int(request.form["exit_doors"])
 
-        # Validate capacity
+        # Safety checks
         if capacity <= 0:
             alert = "Capacity must be greater than 0"
             return render_template("index.html", alert=alert)
@@ -74,7 +75,8 @@ def home():
         result_class=result_class,
         density_percent=density_percent,
         risk_score=risk_score,
-        evac_time=evac_time
+        evac_time=evac_time,
+        location=location
     )
 
 if __name__ == "__main__":

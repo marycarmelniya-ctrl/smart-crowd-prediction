@@ -2,64 +2,105 @@
 <html>
 <head>
     <title>Smart Crowd Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<div class="container">
-    <h1>Smart Crowd Prediction System</h1>
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex items-center justify-center">
 
-    <form method="POST" class="form-box">
-        <label>Entries</label>
-        <input type="number" name="entries" required>
+<div class="w-full max-w-5xl p-8 bg-white shadow-2xl rounded-2xl">
 
-        <label>Exits</label>
-        <input type="number" name="exits" required>
+    <h1 class="text-3xl font-bold text-center text-blue-700 mb-8">
+        Smart Crowd & Safety Monitoring System
+    </h1>
 
-        <label>Capacity</label>
-        <input type="number" name="capacity" required>
+    <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <label>Number of Exit Doors</label>
-        <input type="number" name="exit_doors" required>
+        <div>
+            <label class="block font-semibold mb-1">Select Location</label>
+            <select name="location" required
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                <option value="Mall - Ground Floor">Mall - Ground Floor</option>
+                <option value="Mall - Food Court">Mall - Food Court</option>
+                <option value="Stadium - Gate A">Stadium - Gate A</option>
+                <option value="Metro - Platform 1">Metro - Platform 1</option>
+            </select>
+        </div>
 
-        <button type="submit">Predict Crowd</button>
+        <div>
+            <label class="block font-semibold mb-1">Entries</label>
+            <input type="number" name="entries" required
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <div>
+            <label class="block font-semibold mb-1">Exits</label>
+            <input type="number" name="exits" required
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <div>
+            <label class="block font-semibold mb-1">Capacity</label>
+            <input type="number" name="capacity" required
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <div>
+            <label class="block font-semibold mb-1">Exit Doors</label>
+            <input type="number" name="exit_doors" required
+                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <div class="col-span-full text-center">
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+                Predict Crowd
+            </button>
+        </div>
+
     </form>
 
     {% if result %}
-    <div class="dashboard">
+    <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <div class="card {{ result_class }}">
-            <h2>{{ result }}</h2>
+        <div class="p-6 bg-blue-100 rounded-xl shadow">
+            <h2 class="text-xl font-bold text-blue-700">{{ result }}</h2>
+            <p class="text-sm text-gray-600 mt-1">{{ location }}</p>
         </div>
 
-        <div class="card">
-            <h3>Waiting Time</h3>
-            <p>{{ waiting_time }}</p>
+        <div class="p-6 bg-gray-100 rounded-xl shadow">
+            <h3 class="font-semibold">Waiting Time</h3>
+            <p class="text-lg">{{ waiting_time }}</p>
         </div>
 
-        <div class="card">
-            <h3>Alert</h3>
+        <div class="p-6 bg-yellow-100 rounded-xl shadow">
+            <h3 class="font-semibold">Alert</h3>
             <p>{{ alert }}</p>
         </div>
 
-        <div class="card">
-            <h3>Density</h3>
-            <p>{{ density_percent }} %</p>
+        <div class="p-6 bg-green-100 rounded-xl shadow">
+            <h3 class="font-semibold">Density</h3>
+            <p class="text-lg">{{ density_percent }} %</p>
         </div>
 
-        <div class="card">
-            <h3>Risk Score</h3>
-            <p>{{ risk_score }}</p>
+        <div class="p-6 bg-purple-100 rounded-xl shadow">
+            <h3 class="font-semibold">Risk Score</h3>
+            <p class="text-lg">{{ risk_score }}</p>
         </div>
 
-        <div class="card">
-            <h3>Evacuation Time</h3>
-            <p>{{ evac_time }} minutes</p>
+        <div class="p-6 bg-red-100 rounded-xl shadow">
+            <h3 class="font-semibold">Evacuation Time</h3>
+            <p class="text-lg">{{ evac_time }} minutes</p>
         </div>
-
-        <button onclick="speakResult()">🔊 Speak Result</button>
 
     </div>
+
+    <div class="text-center mt-6">
+        <button onclick="speakResult()"
+            class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded-lg transition">
+            🔊 Speak Result
+        </button>
+    </div>
+
     {% endif %}
 
 </div>
