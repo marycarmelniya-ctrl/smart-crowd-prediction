@@ -1,127 +1,187 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Smart Crowd Prediction</title>
+    <title>Enterprise Crowd Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex items-center justify-center">
+<body class="bg-gray-200 min-h-screen flex items-center justify-center">
 
-<div class="w-full max-w-5xl p-8 bg-white shadow-2xl rounded-2xl">
+<div class="w-full max-w-7xl bg-white shadow-xl rounded-lg overflow-hidden">
 
-    <h1 class="text-3xl font-bold text-center text-blue-700 mb-8">
-        Smart Crowd & Safety Monitoring System
-    </h1>
-
-    <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
+    <!-- TOP NAV HEADER -->
+    <div class="bg-gray-900 text-white px-8 py-5 flex justify-between items-center">
         <div>
-            <label class="block font-semibold mb-1">Select Location</label>
-            <select name="location" required
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                <option value="Mall - Ground Floor">Mall - Ground Floor</option>
-                <option value="Mall - Food Court">Mall - Food Court</option>
-                <option value="Stadium - Gate A">Stadium - Gate A</option>
-                <option value="Metro - Platform 1">Metro - Platform 1</option>
-            </select>
+            <h1 class="text-xl font-semibold tracking-wide">
+                Crowd Safety Analytics Panel
+            </h1>
+            <p class="text-xs text-gray-400 mt-1">
+                Enterprise Monitoring & Risk Intelligence System
+            </p>
+        </div>
+        <div class="text-xs text-gray-400">
+            Operational Status: <span class="text-green-400">Active</span>
+        </div>
+    </div>
+
+    <div class="grid md:grid-cols-3">
+
+        <!-- INPUT PANEL -->
+        <div class="p-8 border-r bg-gray-50">
+
+            <h2 class="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wider">
+                Input Parameters
+            </h2>
+
+            <form method="POST" class="space-y-5">
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">
+                        Location
+                    </label>
+                    <select name="location" required
+                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
+                        <option value="Mall - Ground Floor">Mall - Ground Floor</option>
+                        <option value="Mall - Food Court">Mall - Food Court</option>
+                        <option value="Stadium - Gate A">Stadium - Gate A</option>
+                        <option value="Metro - Platform 1">Metro - Platform 1</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">
+                        Entries
+                    </label>
+                    <input type="number" name="entries" required
+                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">
+                        Exits
+                    </label>
+                    <input type="number" name="exits" required
+                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">
+                        Capacity
+                    </label>
+                    <input type="number" name="capacity" required
+                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 mb-1">
+                        Exit Doors
+                    </label>
+                    <input type="number" name="exit_doors" required
+                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-gray-900 hover:bg-black text-white py-3 rounded-md text-sm tracking-wide transition">
+                    RUN ANALYSIS
+                </button>
+
+            </form>
         </div>
 
-        <div>
-            <label class="block font-semibold mb-1">Entries</label>
-            <input type="number" name="entries" required
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
-        </div>
+        <!-- ANALYTICS PANEL -->
+        <div class="md:col-span-2 p-8">
 
-        <div>
-            <label class="block font-semibold mb-1">Exits</label>
-            <input type="number" name="exits" required
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
-        </div>
+            {% if result %}
 
-        <div>
-            <label class="block font-semibold mb-1">Capacity</label>
-            <input type="number" name="capacity" required
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
-        </div>
+            <h2 class="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wider">
+                Live Metrics
+            </h2>
 
-        <div>
-            <label class="block font-semibold mb-1">Exit Doors</label>
-            <input type="number" name="exit_doors" required
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
-        </div>
+            <div class="grid grid-cols-3 gap-6">
 
-        <div class="col-span-full text-center">
-            <button type="submit"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
-                Predict Crowd
-            </button>
-        </div>
+                <div class="bg-gray-100 p-5 rounded-md">
+                    <p class="text-xs text-gray-500">Crowd Status</p>
+                    <p class="text-lg font-semibold text-gray-800 mt-1">
+                        {{ result }}
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">{{ location }}</p>
+                </div>
 
-    </form>
+                <div class="bg-gray-100 p-5 rounded-md">
+                    <p class="text-xs text-gray-500">Entry Delay</p>
+                    <p class="text-lg font-semibold text-gray-800 mt-1">
+                        {{ waiting_time }}
+                    </p>
+                </div>
 
-    {% if result %}
+                <div class="bg-gray-100 p-5 rounded-md">
+                    <p class="text-xs text-gray-500">Density</p>
+                    <p class="text-lg font-semibold text-gray-800 mt-1">
+                        {{ density_percent }} %
+                    </p>
+                </div>
 
-    <!-- Result Cards -->
-    <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-100 p-5 rounded-md">
+                    <p class="text-xs text-gray-500">Risk Score</p>
+                    <p class="text-lg font-semibold text-gray-800 mt-1">
+                        {{ risk_score }}
+                    </p>
+                </div>
 
-        <div class="p-6 bg-blue-100 rounded-xl shadow">
-            <h2 class="text-xl font-bold text-blue-700">{{ result }}</h2>
-            <p class="text-sm text-gray-600 mt-1">{{ location }}</p>
-        </div>
+                <div class="bg-gray-100 p-5 rounded-md col-span-2">
+                    <p class="text-xs text-gray-500">Evacuation Time</p>
+                    <p class="text-lg font-semibold text-gray-800 mt-1">
+                        {{ evac_time }} minutes
+                    </p>
+                </div>
 
-        <div class="p-6 bg-gray-100 rounded-xl shadow">
-            <h3 class="font-semibold">Entry Waiting Time</h3>
-            <p class="text-lg">{{ waiting_time }}</p>
-        </div>
+                <div class="bg-gray-100 p-5 rounded-md col-span-3">
+                    <p class="text-xs text-gray-500">System Alert</p>
+                    <p class="text-sm text-gray-700 mt-1">
+                        {{ alert }}
+                    </p>
+                </div>
 
-        <div class="p-6 bg-yellow-100 rounded-xl shadow">
-            <h3 class="font-semibold">Alert</h3>
-            <p>{{ alert }}</p>
-        </div>
+            </div>
 
-        <div class="p-6 bg-green-100 rounded-xl shadow">
-            <h3 class="font-semibold">Density</h3>
-            <p class="text-lg">{{ density_percent }} %</p>
-        </div>
+            <!-- CHART -->
+            <div class="mt-10">
+                <canvas id="densityChart"></canvas>
+            </div>
 
-        <div class="p-6 bg-purple-100 rounded-xl shadow">
-            <h3 class="font-semibold">Risk Score</h3>
-            <p class="text-lg">{{ risk_score }}</p>
-        </div>
+            <!-- AUDIO BRIEFING BUTTON -->
+            <div class="mt-6 text-right">
+                <button onclick="playBriefing()"
+                    class="bg-gray-800 hover:bg-black text-white px-6 py-2 rounded-md text-xs tracking-wide transition">
+                    ▶ PLAY AUDIO BRIEFING
+                </button>
+            </div>
 
-        <div class="p-6 bg-red-100 rounded-xl shadow">
-            <h3 class="font-semibold">Evacuation Time</h3>
-            <p class="text-lg">{{ evac_time }} minutes</p>
+            {% endif %}
+
         </div>
 
     </div>
-
-    <!-- Chart -->
-    <div class="mt-12">
-        <h3 class="text-lg font-semibold text-center mb-4">
-            Crowd Density Visualization
-        </h3>
-        <canvas id="densityChart"></canvas>
-    </div>
-
-    <!-- Speak Button -->
-    <div class="text-center mt-6">
-        <button onclick="speakResult()"
-            class="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded-lg transition">
-            🔊 Speak Result
-        </button>
-    </div>
-
-    {% endif %}
 
 </div>
 
 <script>
-function speakResult() {
-    let text = "{{ result }}. Waiting time {{ waiting_time }}. {{ alert }}";
-    let speech = new SpeechSynthesisUtterance(text);
+function playBriefing() {
+    let briefing = `
+    Crowd status is {{ result }} at {{ location }}.
+    Current density is {{ density_percent }} percent.
+    Estimated entry delay is {{ waiting_time }}.
+    Risk score is {{ risk_score }}.
+    Evacuation time is {{ evac_time }} minutes.
+    System alert: {{ alert }}.
+    `;
+
+    let speech = new SpeechSynthesisUtterance(briefing);
+    speech.rate = 0.95;
+    speech.pitch = 1;
     speech.lang = "en-US";
+
     window.speechSynthesis.speak(speech);
 }
 </script>
@@ -133,15 +193,14 @@ const ctx = document.getElementById('densityChart').getContext('2d');
 new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ['Density'],
+        labels: ['Crowd Density %'],
         datasets: [{
-            label: 'Density %',
             data: [{{ density_percent }}],
-            backgroundColor: 'rgba(59, 130, 246, 0.7)'
+            backgroundColor: '#111827'
         }]
     },
     options: {
-        responsive: true,
+        plugins: { legend: { display: false } },
         scales: {
             y: {
                 beginAtZero: true,
