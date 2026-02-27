@@ -13,24 +13,9 @@
         Smart Crowd & Safety Monitoring System
     </h1>
 
-    <form method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div>
-            <label class="block font-semibold mb-1">Select Location</label>
-            <select name="location" required
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                <option value="Mall - Ground Floor">Mall - Ground Floor</option>
-                <option value="Mall - Food Court">Mall - Food Court</option>
-                <option value="Stadium - Gate A">Stadium - Gate A</option>
-                <option value="Metro - Platform 1">Metro - Platform 1</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="block font-semibold mb-1">Entries</label>
-            <input type="number" name="entries" required
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400">
-        </div>
+    <form method="POST" class="form-box">
+        <label>Entries</label>
+        <input type="number" name="entries" required>
 
         <div>
             <label class="block font-semibold mb-1">Exits</label>
