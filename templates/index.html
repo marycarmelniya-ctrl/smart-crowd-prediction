@@ -7,7 +7,6 @@
 <body>
 
 <div class="container">
-
     <h1>Smart Crowd Prediction System</h1>
 
     <form method="POST" class="form-box">
@@ -19,9 +18,9 @@
 
         <label>Capacity</label>
         <input type="number" name="capacity" required>
-        	
-	<label>Number of Exit Doors</label>
-	<input type="number" name="exit_doors" required>
+
+        <label>Number of Exit Doors</label>
+        <input type="number" name="exit_doors" required>
 
         <button type="submit">Predict Crowd</button>
     </form>
@@ -41,6 +40,21 @@
         <div class="card">
             <h3>Alert</h3>
             <p>{{ alert }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Density</h3>
+            <p>{{ density_percent }} %</p>
+        </div>
+
+        <div class="card">
+            <h3>Risk Score</h3>
+            <p>{{ risk_score }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Evacuation Time</h3>
+            <p>{{ evac_time }} minutes</p>
         </div>
 
         <button onclick="speakResult()">🔊 Speak Result</button>
