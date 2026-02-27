@@ -11,6 +11,14 @@ def home():
     result_class = ""
 
     if request.method == "POST":
+        exit_doors = int(request.form["exit_doors"])
+
+current_people = entries - exits
+if current_people < 0:
+    current_people = 0
+
+density = current_people / capacity
+density_percent = round(density * 100, 2)
 
         entries = int(request.form["entries"])
         exits = int(request.form["exits"])
@@ -53,3 +61,13 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)
+exit_factor = 1 / exit_doors if exit_doors > 0 else 1
+risk_score = round((density * 70) + (exit_factor * 30), 2)
+flow_rate = 50  # people per minute per door
+evac_time = round(current_people / (exit_doors * flow_rate), 2)
+if density > 0.75 and exit_doors < 2:
+    alert = "🚨 High Crowd + Low Exit Doors = Emergency Risk!"
+elif density > 0.75:
+    alert = "⚠ High Crowd – Monitor Situation"
+else:
+    alert = "Safe Environment"
