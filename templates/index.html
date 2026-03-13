@@ -1,176 +1,489 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Enterprise Crowd Analytics</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="bg-gray-200 min-h-screen flex items-center justify-center">
+<html lang="en">
 
-<div class="w-full max-w-7xl bg-white shadow-xl rounded-lg overflow-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Crowd Analytics</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            /* Slate 900 */
+            color: #f8fafc;
+            /* Slate 50 */
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            /* Slate 800 with opacity */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .metric-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .pulse-dot {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+            }
+
+            100% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col pt-4 pb-8 px-4 sm:px-6 lg:px-8">
 
     <!-- HEADER -->
-    <div class="bg-gray-900 text-white px-8 py-5 flex justify-between items-center">
-        <div>
-            <h1 class="text-xl font-semibold tracking-wide">
-                Crowd Safety Analytics Panel
-            </h1>
-            <p class="text-xs text-gray-400 mt-1">
-                Enterprise Monitoring & Risk Intelligence System
-            </p>
-        </div>
-        <div class="text-xs text-gray-400">
-            Operational Status:
-            <span class="text-green-400">Active</span>
-        </div>
-    </div>
-
-    <div class="grid md:grid-cols-3">
-
-        <!-- INPUT PANEL -->
-        <div class="p-8 border-r bg-gray-50">
-            <h2 class="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wider">
-                Input Parameters
-            </h2>
-
-            <form method="POST" class="space-y-5">
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Location</label>
-                    <select name="location" required
-                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
-                        <option value="Mall - Ground Floor">Mall - Ground Floor</option>
-                        <option value="Mall - Food Court">Mall - Food Court</option>
-                        <option value="Stadium - Gate A">Stadium - Gate A</option>
-                        <option value="Metro - Platform 1">Metro - Platform 1</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Entries</label>
-                    <input type="number" name="entries" min="0" required
-                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Exits</label>
-                    <input type="number" name="exits" min="0" required
-                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Capacity</label>
-                    <input type="number" name="capacity" min="1" required
-                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-gray-500 mb-1">Exit Doors</label>
-                    <input type="number" name="exit_doors" min="1" required
-                        class="w-full p-3 border rounded-md focus:ring-2 focus:ring-gray-400">
-                </div>
-
-                <button type="submit"
-                    class="w-full bg-gray-900 hover:bg-black text-white py-3 rounded-md text-sm tracking-wide transition">
-                    RUN ANALYSIS
-                </button>
-
-            </form>
+    <header
+        class="w-full max-w-7xl mx-auto glass-panel rounded-2xl mb-6 px-6 py-4 flex flex-col sm:flex-row justify-between items-center z-10">
+        <div class="flex items-center space-x-4 mb-4 sm:mb-0">
+            <div
+                class="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
+                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white drop-shadow-sm">
+                    Nexus Crowd Analytics
+                </h1>
+                <p class="text-xs text-slate-400 font-medium">
+                    Live Surveillance & Risk Assessment
+                </p>
+            </div>
         </div>
 
-        <!-- ANALYTICS PANEL -->
-        <div class="md:col-span-2 p-8">
+        <div class="flex items-center space-x-3 bg-slate-900/50 px-4 py-2 rounded-full border border-slate-700/50">
+            <div class="w-2.5 h-2.5 bg-green-500 rounded-full pulse-dot"></div>
+            <span class="text-sm font-medium text-slate-300">Live Camera feed</span>
+        </div>
+    </header>
 
-            <!-- SHOW ALERT ALWAYS IF EXISTS -->
-            {% if alert %}
-            <div class="mb-6 p-4 rounded-md bg-red-100 text-red-700">
-                {{ alert }}
-            </div>
-            {% endif %}
+    <main class="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
 
-            {% if result %}
+        <!-- LEFT COLUMN: LIVE VIDEO & SETTINGS -->
+        <div class="lg:col-span-8 flex flex-col space-y-6">
 
-            <h2 class="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wider">
-                Live Metrics
-            </h2>
-
-            <div class="grid grid-cols-3 gap-6">
-
-                <div class="bg-gray-100 p-5 rounded-md">
-                    <p class="text-xs text-gray-500">Crowd Status</p>
-                    <p class="text-lg font-semibold text-gray-800 mt-1">
-                        {{ result }}
-                    </p>
+            <!-- VIDEO FEED -->
+            <section class="glass-panel p-2 rounded-2xl shadow-xl flex-1 flex flex-col">
+                <div class="px-4 py-3 flex justify-between items-center border-b border-slate-700/50">
+                    <h2 id="sector-title"
+                        class="text-sm font-semibold text-slate-200 uppercase tracking-wider flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        Sector - Main Gate
+                    </h2>
+                    <span class="text-xs font-mono text-slate-400 bg-slate-900 px-2 py-1 rounded">YOLOv8 INT8
+                        Core</span>
                 </div>
-
-                <div class="bg-gray-100 p-5 rounded-md">
-                    <p class="text-xs text-gray-500">Entry Delay</p>
-                    <p class="text-lg font-semibold text-gray-800 mt-1">
-                        {{ waiting_time }}
-                    </p>
+                <div class="p-4 flex-1 flex items-center justify-center">
+                    <div class="video-container ring-1 ring-slate-700 shadow-2xl">
+                        <!-- The Live MJPEG Stream -->
+                        <img src="/video_feed" alt="Live Camera Feed" id="video-feed"
+                            onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'640\' height=\'480\'><rect width=\'100%\' height=\'100%\' fill=\'%231e293b\'/><text x=\'50%\' y=\'50%\' font-family=\'sans-serif\' font-size=\'20\' fill=\'%2394a3b8\' text-anchor=\'middle\'>Camera Not Available</text></svg>'">
+                    </div>
                 </div>
+            </section>
 
-                <div class="bg-gray-100 p-5 rounded-md">
-                    <p class="text-xs text-gray-500">Density</p>
-                    <p class="text-lg font-semibold text-gray-800 mt-1">
-                        {{ density_percent }} %
-                    </p>
+            <!-- ALERT BANNER -->
+            <div id="alert-banner" class="hidden rounded-xl p-4 border shadow-lg transition-all duration-300">
+                <div class="flex items-center">
+                    <svg id="alert-icon" class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"></svg>
+                    <p id="alert-text" class="font-medium text-sm sm:text-base"></p>
                 </div>
-
-                <div class="bg-gray-100 p-5 rounded-md">
-                    <p class="text-xs text-gray-500">Risk Score</p>
-                    <p class="text-lg font-semibold text-gray-800 mt-1">
-                        {{ risk_score }}
-                    </p>
-                </div>
-
-                <div class="bg-gray-100 p-5 rounded-md col-span-3">
-                    <p class="text-xs text-gray-500">Evacuation Time</p>
-                    <p class="text-lg font-semibold text-gray-800 mt-1">
-                        {{ evac_time }} minutes
-                    </p>
-                </div>
-
             </div>
 
-            {% endif %}
+        </div>
 
-            <!-- CHART (SAFE LOAD) -->
-            {% if density_percent is not none %}
-            <div class="mt-10">
-                <canvas id="densityChart"></canvas>
-            </div>
+        <!-- RIGHT COLUMN: ANALYTICS -->
+        <div class="lg:col-span-4 flex flex-col space-y-6">
 
-            <script>
-            const canvas = document.getElementById('densityChart');
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Crowd Density %'],
-                        datasets: [{
-                            data: [{{ density_percent|float }}],
-                            backgroundColor: '#111827'
-                        }]
-                    },
-                    options: {
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100
-                            }
-                        }
+            <!-- CONFIGURATION PANEL -->
+            <section class="glass-panel p-6 rounded-2xl shadow-xl">
+                <h2 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-5 flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Environment Parameters
+                </h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Camera / Location</label>
+                        <div class="relative rounded-md shadow-sm">
+                            <select id="cameraInput"
+                                class="block w-full rounded-lg bg-slate-900 border-slate-700 text-white focus:ring-indigo-500 focus:border-indigo-500 py-3 px-4 sm:text-sm transition-colors border">
+                                <option value="0">Local Camera 0 (Main Gate)</option>
+                                <option value="Mallcent.mp4">Recorded Footage (Mall Central)</option>
+                                <option value="foodcourt.mp4">Recorded Footage (Food Court)</option>
+                                <option value="yolof.mp4">Recorded Footage (yolof.mp4)</option>
+                                <option value="2">External Camera 2 (Platform 1)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="updateConfigBtn"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-slate-900 transition-all">
+                        Apply Environment Settings
+                    </button>
+                </div>
+            </section>
+
+            <!-- SIMULATION CONTROLS -->
+            <section class="glass-panel p-6 rounded-2xl shadow-xl">
+                <h2 class="text-sm font-semibold text-rose-400 uppercase tracking-wider mb-4 flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                        </path>
+                    </svg>
+                    Simulation Controls
+                </h2>
+                <h3 class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Camera Zone Focus
+                    (Density Simulator)
+                </h3>
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    <button onclick="simulateEvent('focus_area', 'low')"
+                        class="py-2 px-2 rounded-lg text-xs font-medium text-emerald-100 bg-emerald-600/40 hover:bg-emerald-600 border border-emerald-500/50 transition-colors shadow-lg">Low
+                        Density</button>
+                    <button onclick="simulateEvent('focus_area', 'medium')"
+                        class="py-2 px-2 rounded-lg text-xs font-medium text-amber-100 bg-amber-600/40 hover:bg-amber-600 border border-amber-500/50 transition-colors shadow-lg">Med.
+                        Density</button>
+                    <button onclick="simulateEvent('focus_area', 'high')"
+                        class="py-2 px-2 rounded-lg text-xs font-medium text-rose-100 bg-rose-600/60 hover:bg-rose-600 border border-rose-500/50 transition-colors shadow-lg">High
+                        Density</button>
+                </div>
+                <button onclick="simulateEvent('clear', null)"
+                    class="w-full py-2 px-4 rounded-lg text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-600 transition-colors">Clear
+                    All Simulations</button>
+            </section>
+
+            <!-- LIVE METRICS -->
+            <section class="glass-panel p-6 rounded-2xl shadow-xl flex-1 flex flex-col">
+                <h2 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-5 flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    Telemetrics
+                </h2>
+
+                <!-- Primary Focus: People Count -->
+                <div class="bg-indigo-900/30 border border-indigo-500/20 rounded-xl p-5 mb-5 text-center metric-card">
+                    <p class="text-xs font-medium text-indigo-300 uppercase tracking-wide">Live Detected Count</p>
+                    <p class="text-5xl font-bold text-white mt-2 font-mono" id="liveCount">0</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 flex-1">
+
+                    <div
+                        class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 metric-card flex flex-col justify-between">
+                        <p class="text-xs text-slate-400">Crowd Density</p>
+                        <p class="text-2xl font-bold text-white mt-1" id="densityVal">0%</p>
+                    </div>
+
+                    <div
+                        class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 metric-card flex flex-col justify-between">
+                        <p class="text-xs text-slate-400">Risk Score</p>
+                        <p class="text-2xl font-bold text-white mt-1" id="riskVal">0</p>
+                    </div>
+
+                    <div
+                        class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 metric-card flex flex-col justify-between">
+                        <p class="text-xs text-slate-400">Est. Entry Delay</p>
+                        <p class="text-xl font-bold text-white mt-1" id="delayVal">0 min</p>
+                    </div>
+
+                    <div
+                        class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 metric-card flex flex-col justify-between">
+                        <p class="text-xs text-slate-400">Evac. Time</p>
+                        <p class="text-xl font-bold text-white mt-1 text-emerald-400" id="evacVal">0m</p>
+                    </div>
+
+                </div>
+
+                <!-- Chart Container -->
+                <div class="mt-6 h-32 w-full">
+                    <canvas id="densityChart"></canvas>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- JS Logic -->
+    <script>
+        // Chart Initialization
+        const ctx = document.getElementById('densityChart').getContext('2d');
+        const densityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(20).fill(''), // X axis history
+                datasets: [{
+                    label: 'Density %',
+                    data: Array(20).fill(0),
+                    borderColor: '#6366f1', // Indigo 500
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        display: true,
+                        beginAtZero: true,
+                        max: 120,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        border: { display: false },
+                        ticks: { color: '#64748b', font: { size: 10 } }
                     }
-                });
+                },
+                animation: { duration: 0 } // disable animation for smoother live updates
             }
-            </script>
-            {% endif %}
+        });
 
-        </div>
-    </div>
-</div>
+        // Update configuration when Apply button is clicked
+        document.getElementById('updateConfigBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('updateConfigBtn');
+            const originalText = btn.innerText;
+            btn.innerText = 'Updating...';
 
+            const config = {
+                camera_source: document.getElementById('cameraInput').value
+            };
+
+            // Update Sector Name visually based on dropdown selection text
+            const cameraSelect = document.getElementById('cameraInput');
+            const sectorTitle = document.getElementById('sector-title');
+            if (sectorTitle) {
+                const text = cameraSelect.options[cameraSelect.selectedIndex].text;
+                const match = text.match(/\((.*?)\)/);
+                if (match) {
+                    sectorTitle.innerHTML = `<svg class="w-4 h-4 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> Sector - ${match[1]}`;
+                }
+            }
+
+            try {
+                await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+
+                setTimeout(() => {
+                    btn.innerText = "Saved Successfully";
+                    btn.classList.replace("bg-indigo-600", "bg-emerald-600");
+                    btn.classList.replace("hover:bg-indigo-700", "hover:bg-emerald-700");
+
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.classList.replace("bg-emerald-600", "bg-indigo-600");
+                        btn.classList.replace("hover:bg-emerald-700", "hover:bg-indigo-700");
+                        btn.classList.remove("opacity-75");
+                    }, 2000);
+                }, 300);
+
+                fetchMetrics(); // Force update
+            } catch (e) {
+                console.error("Config update failed:", e);
+                btn.innerText = "Update Failed";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                }, 2000);
+            }
+        });
+
+        // Polling Logic for Metrics
+        async function fetchMetrics() {
+            try {
+                const response = await fetch('/api/metrics');
+                const data = await response.json();
+
+                // Update basic text
+                document.getElementById('liveCount').innerText = data.people;
+                document.getElementById('densityVal').innerText = data.density_percent + '%';
+                document.getElementById('riskVal').innerText = data.risk_score;
+                document.getElementById('delayVal').innerText = data.waiting_time;
+                document.getElementById('evacVal').innerText = data.evac_time;
+
+                // Dynamic colors for values
+                const densityEl = document.getElementById('densityVal');
+                const riskEl = document.getElementById('riskVal');
+
+                if (data.density_percent < 50) {
+                    densityEl.className = "text-2xl font-bold mt-1 text-emerald-400";
+                } else if (data.density_percent < 80) {
+                    densityEl.className = "text-2xl font-bold mt-1 text-amber-400";
+                } else {
+                    densityEl.className = "text-2xl font-bold mt-1 text-rose-500 animate-pulse";
+                }
+
+                if (data.risk_score < 40) {
+                    riskEl.className = "text-2xl font-bold mt-1 text-emerald-400";
+                } else if (data.risk_score < 75) {
+                    riskEl.className = "text-2xl font-bold mt-1 text-amber-400";
+                } else {
+                    riskEl.className = "text-2xl font-bold mt-1 text-rose-500 animate-pulse";
+                }
+
+                // Alert Banner Logic
+                const banner = document.getElementById('alert-banner');
+                const bannerText = document.getElementById('alert-text');
+                const bannerIcon = document.getElementById('alert-icon');
+
+                if (data.alert && data.alert !== "Safe Environment") {
+                    banner.classList.remove('hidden');
+                    bannerText.innerHTML = `<strong>${data.alert}</strong><br><span class="opacity-90 font-mono text-xs sm:text-sm mt-1 block tracking-wider uppercase text-white drop-shadow-md">➤ ${data.action_call}</span>`;
+
+                    if (data.alert.includes("LARGE FIRE") || data.alert.includes("Emergency Risk") || data.alert.includes("HIGH CROWD DENSITY")) {
+                        // Critical Alert
+                        banner.className = "rounded-xl p-4 border shadow-lg transition-all duration-300 bg-rose-900/60 border-rose-500/80 text-rose-200 mt-0 animate-pulse";
+                        bannerIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>`;
+                        bannerIcon.classList.add("text-rose-400");
+                    } else {
+                        // Warning
+                        banner.className = "rounded-xl p-4 border shadow-lg transition-all duration-300 bg-amber-900/60 border-amber-500/80 text-amber-200 mt-0";
+                        bannerIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>`;
+                        bannerIcon.classList.add("text-amber-400");
+                    }
+                } else {
+                    // Safe (Hidden to save space, or show green)
+                    banner.classList.add('hidden');
+                    // If you want to show a persistent green banner, un-hide and adapt classes.
+                }
+
+                // Update Chart
+                const arr = densityChart.data.datasets[0].data;
+                arr.shift(); // remove oldest
+                arr.push(data.density_percent); // add newest
+
+                // Color graph based on latest density
+                if (data.density_percent > 80) {
+                    densityChart.data.datasets[0].borderColor = '#f43f5e'; // Rose 500
+                    densityChart.data.datasets[0].backgroundColor = 'rgba(244, 63, 94, 0.1)';
+                } else if (data.density_percent > 50) {
+                    densityChart.data.datasets[0].borderColor = '#f59e0b'; // Amber 500
+                    densityChart.data.datasets[0].backgroundColor = 'rgba(245, 158, 11, 0.1)';
+                } else {
+                    densityChart.data.datasets[0].borderColor = '#6366f1'; // Indigo 500
+                    densityChart.data.datasets[0].backgroundColor = 'rgba(99, 102, 241, 0.1)';
+                }
+
+                densityChart.update();
+
+            } catch (error) {
+                console.error("Error fetching metrics:", error);
+            }
+        }
+
+        // Fetch metrics every 1.5 seconds
+        setInterval(fetchMetrics, 1500);
+        // Initial fetch
+        fetchMetrics();
+
+        async function simulateEvent(key, val) {
+            try {
+                let bodyData = {};
+                if (key === 'clear') {
+                    bodyData = { focus_area: null };
+                } else if (key === 'focus_area') {
+                    bodyData = { focus_area: val };
+                }
+
+                await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyData)
+                });
+                fetchMetrics(); // Force immediate update
+            } catch (e) { console.error(e); }
+        }
+    </script>
 </body>
+
 </html>
